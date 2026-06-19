@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Sign Out | Elsa Leo‑Rhynie Hall</title>
+    <title>Overnight Checkout Portal | Elsa Leo‑Rhynie Hall</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+    </script>
+    <!-- EmailJS -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
     </script>
     <style>
@@ -69,14 +75,9 @@
             text-align: center;
             margin-bottom: 1.8rem;
         }
-        .card-header .icon {
-            font-size: 2.8rem;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
         .card-header h1 {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 2.4rem;
+            font-size: 2.6rem;
             letter-spacing: 0.03em;
             line-height: 1;
             color: var(--text);
@@ -84,10 +85,16 @@
         .card-header h1 span {
             color: var(--red);
         }
-        .card-header p {
-            color: var(--muted);
+        .card-header .subtitle {
+            color: var(--silver-dark);
             font-size: 0.85rem;
-            margin-top: 0.4rem;
+            margin-top: 0.3rem;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+        .card-header .subtitle strong {
+            color: var(--silver);
+            font-weight: 500;
         }
 
         .field {
@@ -121,25 +128,6 @@
         .field input::placeholder {
             color: var(--muted);
             font-weight: 300;
-        }
-
-        .sample-hint {
-            font-size: 0.75rem;
-            color: var(--muted);
-            margin-top: 6px;
-            text-align: center;
-        }
-        .sample-hint code {
-            background: var(--surface2);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: 'DM Mono', monospace;
-            color: var(--silver);
-            border: 1px solid var(--border);
-            cursor: pointer;
-        }
-        .sample-hint code:hover {
-            background: var(--border);
         }
 
         .info-box {
@@ -294,9 +282,6 @@
             .card-header h1 {
                 font-size: 2rem;
             }
-            .card-header .icon {
-                font-size: 2rem;
-            }
             .btn {
                 font-size: 1rem;
                 padding: 12px;
@@ -316,9 +301,11 @@
         </div>
 
         <div class="card-header">
-            <span class="icon">🚪</span>
-            <h1>Sign <span>Out</span></h1>
-            <p>Confirm your departure from the hall</p>
+            <h1>Overnight <span>Checkout</span> Portal</h1>
+            <div class="subtitle">
+                <strong>Elsa Leo‑Rhynie 'Towers' Hall</strong><br />
+                Off‑Campus Housing &amp; Student Accommodations
+            </div>
         </div>
 
         <div class="offline-banner" id="offlineBanner">📡 You are offline. Your sign-out will be saved and sent when you reconnect.</div>
@@ -326,12 +313,6 @@
         <div class="field">
             <label for="requestIdInput">Your Request ID</label>
             <input type="text" id="requestIdInput" placeholder="e.g. A3F9K2M7" autocomplete="off" value="A3F9K2M7" />
-        </div>
-
-        <div class="sample-hint">
-            🔍 <span style="color:var(--muted);">Sample ID for testing:</span>
-            <code id="sampleCode">A3F9K2M7</code>
-            <span style="color:var(--muted);font-size:0.7rem;margin-left:4px;">(click to copy)</span>
         </div>
 
         <div class="info-box" id="infoBox">
@@ -346,6 +327,21 @@
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  CHECK FIREBASE IS LOADED
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        if (typeof firebase === 'undefined') {
+            document.getElementById('infoBox').classList.add('show');
+            document.getElementById('infoContent').innerHTML = `
+                <div style="color:var(--red);">
+                    <strong>❌ Firebase Failed to Load</strong><br />
+                    The Firebase SDK did not load. Please check your internet connection and refresh the page.
+                </div>
+            `;
+            document.getElementById('actionBtn').disabled = true;
+            throw new Error('Firebase is not defined. Check script tags.');
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  FIREBASE CONFIG (same as main form)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         const firebaseConfig = {
@@ -359,6 +355,12 @@
         };
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INIT FIREBASE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        firebase.initializeApp(firebaseConfig);
+        console.log('✅ Firebase initialized');
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  EMAILJS CONFIG
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         const EMAILJS_CONFIG = {
@@ -367,6 +369,13 @@
             TEMPLATE_ID: 'template_3vlb82p',
             ADMIN_EMAIL: 'elroffcampus@gmail.com'
         };
+
+        (function initEmailJS() {
+            try {
+                emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+                console.log('✅ EmailJS initialized');
+            } catch (e) { console.warn('EmailJS init failed.', e); }
+        })();
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  OFFLINE SYNC QUEUE (localStorage)
@@ -464,23 +473,6 @@
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  INIT FIREBASE & EMAILJS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        if (typeof firebase !== 'undefined') {
-            firebase.initializeApp(firebaseConfig);
-            console.log('✅ Firebase initialized');
-        } else {
-            console.error('❌ Firebase SDK not loaded!');
-        }
-
-        (function initEmailJS() {
-            try {
-                emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
-                console.log('✅ EmailJS initialized');
-            } catch (e) { console.warn('EmailJS init failed.', e); }
-        })();
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  DOM REFS
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         const input = document.getElementById('requestIdInput');
@@ -507,7 +499,6 @@
                 const db = firebase.database();
                 const ref = db.ref('stayOverRecords');
 
-                // Primary: use orderByChild
                 ref.orderByChild('requestId').equalTo(requestId).once('value')
                     .then(snapshot => {
                         const data = snapshot.val();
@@ -517,8 +508,7 @@
                             record.firebaseId = key;
                             resolve(record);
                         } else {
-                            // Fallback: read all and filter manually
-                            console.warn('orderByChild returned nothing, trying fallback...');
+                            // Fallback
                             ref.once('value')
                                 .then(allSnap => {
                                     const allData = allSnap.val();
@@ -538,7 +528,6 @@
                     })
                     .catch(err => {
                         console.error('Primary lookup error:', err);
-                        // Try fallback on error
                         ref.once('value')
                             .then(allSnap => {
                                 const allData = allSnap.val();
@@ -842,20 +831,6 @@
         });
 
         actionBtn.addEventListener('click', handleAction);
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  CLICK TO COPY SAMPLE ID
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        document.getElementById('sampleCode').addEventListener('click', function() {
-            const sample = this.textContent;
-            navigator.clipboard?.writeText(sample).then(() => {
-                showToast('Copied!', `Sample ID "${sample}" copied to clipboard.`, true);
-            }).catch(() => {
-                input.value = sample;
-                input.dispatchEvent(new Event('input'));
-                showToast('Filled', `Sample ID "${sample}" filled in.`, true);
-            });
-        });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  TOAST HELPER
