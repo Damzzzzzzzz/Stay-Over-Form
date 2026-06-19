@@ -7,15 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
     </script>
-
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
     </script>
-
     <style>
-        /* ── RESET & ROOT ── */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -44,6 +40,7 @@
             --turquoise: #1ABC9C;
             --royalblue: #4169E1;
             --dragon-red: #E31837;
+            --checkedout: #6B7280;
         }
         body {
             font-family: 'DM Sans', sans-serif;
@@ -61,7 +58,6 @@
             z-index: 999;
         }
 
-        /* ── ENTRY SCREEN ── */
         .entry-screen {
             position: fixed;
             inset: 0;
@@ -232,7 +228,6 @@
             transform: translateY(-2px);
         }
 
-        /* ── MAIN APP ── */
         .main-app {
             display: none;
         }
@@ -471,14 +466,27 @@
         .field {
             margin-bottom: 0.9rem;
         }
-        label {
-            display: block;
+        .field label {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px 6px;
             font-size: 0.7rem;
             font-weight: 500;
             letter-spacing: 0.05em;
             color: var(--muted);
-            margin-bottom: 4px;
             text-transform: uppercase;
+            margin-bottom: 4px;
+            min-height: 1.2rem;
+            line-height: 1.2;
+        }
+        .field label .hint {
+            font-size: 0.55rem;
+            font-weight: 400;
+            text-transform: none;
+            color: var(--green);
+            letter-spacing: 0.02em;
+            line-height: 1.2;
         }
         input,
         select,
@@ -538,7 +546,6 @@
             transform: none;
         }
 
-        /* ── CUSTOM DATE PICKER ── */
         .date-picker-trigger {
             display: flex;
             align-items: center;
@@ -577,7 +584,6 @@
             box-shadow: 0 0 0 3px rgba(227, 24, 55, 0.35) !important;
         }
 
-        /* ── DATE PICKER MODAL ── */
         .date-picker-modal {
             display: none;
             position: fixed;
@@ -633,7 +639,6 @@
             border-color: var(--silver);
             color: var(--text);
         }
-
         .date-picker-panel .day-names {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -649,7 +654,6 @@
         .date-picker-panel .day-names span {
             padding: 4px 0;
         }
-
         .date-picker-panel .date-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -696,7 +700,6 @@
             cursor: default;
             pointer-events: none;
         }
-
         .date-picker-panel .picker-actions {
             display: flex;
             gap: 10px;
@@ -1061,6 +1064,13 @@
         .action-btn.approve:hover {
             border-color: var(--green);
             color: var(--green);
+        }
+        .action-btn.checkout-btn:hover {
+            border-color: var(--amber);
+            color: var(--amber);
+        }
+        .status-checkedout {
+            color: var(--checkedout);
         }
         .empty-state {
             text-align: center;
@@ -1498,7 +1508,6 @@
             font-size: 1rem;
         }
 
-        /* ── RESPONSIVE ── */
         @media (max-width: 1380px) {
             .rules-box {
                 position: relative;
@@ -1578,7 +1587,6 @@
             .entry-buttons {
                 gap: 0.5rem;
             }
-
             .wings-container {
                 flex-direction: column;
                 gap: 6px;
@@ -1701,6 +1709,14 @@
             .date-picker-trigger .date-display {
                 font-size: 0.8rem;
             }
+            .field label {
+                font-size: 0.65rem;
+                min-height: 1rem;
+                gap: 3px 5px;
+            }
+            .field label .hint {
+                font-size: 0.5rem;
+            }
         }
         @media (max-width: 420px) {
             .entry-content {
@@ -1800,6 +1816,13 @@
             }
             .date-picker-trigger .date-icon {
                 font-size: 0.85rem;
+            }
+            .field label {
+                font-size: 0.6rem;
+                gap: 2px 4px;
+            }
+            .field label .hint {
+                font-size: 0.45rem;
             }
         }
 
@@ -1941,7 +1964,7 @@
                         <div class="section-divider">Stay Profile</div>
                         <div class="time-row">
                             <div class="field">
-                                <label>Arrival Date <span style="color:var(--green);font-size:0.6rem;">(min 3 days ahead)</span></label>
+                                <label>Arrival Date <span class="hint">(min 3 days ahead)</span></label>
                                 <div class="date-picker-trigger" id="arrDateTrigger" onclick="openDatePicker('arr')">
                                     <span class="date-display placeholder" id="arrDateDisplay">Select date</span>
                                     <span class="date-icon">📅</span>
@@ -1961,7 +1984,7 @@
                         </div>
                         <div class="time-row">
                             <div class="field">
-                                <label>Arrival Time <span style="color:var(--amber);font-size:0.6rem;">(9:00 AM – 7:30 PM)</span></label>
+                                <label>Arrival Time <span style="color:var(--amber);font-size:0.55rem;font-weight:400;text-transform:none;letter-spacing:0.02em;">(9:00 AM – 7:30 PM)</span></label>
                                 <div class="time-picker-trigger" id="arrTimeTrigger" onclick="openTimePicker('arr')">
                                     <span class="time-display placeholder" id="arrTimeDisplay">Select time</span>
                                     <span class="time-icon">🕒</span>
@@ -1969,7 +1992,7 @@
                                 <input type="hidden" id="arrTime" />
                             </div>
                             <div class="field">
-                                <label>Departure Time <span style="color:var(--green);font-size:0.6rem;">(fixed at 11:00 AM)</span></label>
+                                <label>Departure Time <span style="color:var(--green);font-size:0.55rem;font-weight:400;text-transform:none;letter-spacing:0.02em;">(fixed at 11:00 AM)</span></label>
                                 <div class="fixed-time-display" id="depTimeFixed">
                                     <span class="time-icon">🕒</span>
                                     <span>11:00 AM</span>
@@ -2151,12 +2174,11 @@
             tempMinute = 0,
             tempAmPm = 'AM';
 
-        // ── Date picker state ──
-        let activeDatePicker = null; // 'arr' or 'dep'
+        let activeDatePicker = null;
         let datePickerMonth = new Date().getMonth();
         let datePickerYear = new Date().getFullYear();
-        let datePickerSelected = null; // Date object or null
-        let datePickerTempDate = null; // Date object for temporary selection
+        let datePickerSelected = null;
+        let datePickerTempDate = null;
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         //  FIREBASE LISTENER
@@ -2170,6 +2192,8 @@
                     Object.keys(data).forEach(key => {
                         const entry = data[key];
                         entry.firebaseId = key;
+                        // Ensure checkedOut field exists
+                        if (entry.checkedOut === undefined) entry.checkedOut = false;
                         records.push(entry);
                     });
                 }
@@ -2312,10 +2336,8 @@
             updateVisibilityForRole();
             listenForRecords();
 
-            // Set departure time fixed
             document.getElementById('depTime').value = '11:00 AM';
 
-            // Set default dates
             const minDate = getMinDate();
             const arrDateInput = document.getElementById('arrDate');
             const arrDisplay = document.getElementById('arrDateDisplay');
@@ -2331,7 +2353,6 @@
             depDisplay.textContent = formatDateDisplay(defaultDep);
             depDisplay.classList.remove('placeholder');
 
-            // Store selected dates for validation
             window._arrDateObj = minDate;
             window._depDateObj = defaultDep;
 
@@ -2372,7 +2393,6 @@
             const modal = document.getElementById('datePickerModal');
             modal.classList.add('open');
 
-            // Get current selected date for this field
             const hiddenInput = document.getElementById(type + 'Date');
             const currentVal = hiddenInput.value;
             if (currentVal) {
@@ -2397,7 +2417,6 @@
                 datePickerYear = today.getFullYear();
             }
 
-            // Highlight the trigger
             document.querySelectorAll('.date-picker-trigger').forEach(el => el.classList.remove('active'));
             document.getElementById(type + 'DateTrigger').classList.add('active');
 
@@ -2428,14 +2447,12 @@
             const firstDay = new Date(datePickerYear, datePickerMonth, 1);
             const lastDay = new Date(datePickerYear, datePickerMonth + 1, 0);
             const daysInMonth = lastDay.getDate();
-            // 0 = Monday, 1 = Tuesday ... 6 = Sunday
             let startOffset = firstDay.getDay() - 1;
             if (startOffset < 0) startOffset = 6;
 
             const today = getToday();
             const minDate = getMinDate();
 
-            // Get the arrival date if we're picking departure
             let arrivalDate = null;
             if (activeDatePicker === 'dep') {
                 const arrVal = document.getElementById('arrDate').value;
@@ -2444,7 +2461,6 @@
 
             grid.innerHTML = '';
 
-            // Previous month days
             const prevMonthLastDay = new Date(datePickerYear, datePickerMonth, 0).getDate();
             for (let i = startOffset - 1; i >= 0; i--) {
                 const day = prevMonthLastDay - i;
@@ -2454,7 +2470,6 @@
                 grid.appendChild(cell);
             }
 
-            // Current month days
             for (let d = 1; d <= daysInMonth; d++) {
                 const cell = document.createElement('div');
                 const dateObj = new Date(datePickerYear, datePickerMonth, d);
@@ -2463,22 +2478,18 @@
                 cell.textContent = d;
                 cell.dataset.date = dateStr;
 
-                // Check if today
                 if (isSameDay(dateObj, today)) {
                     cell.classList.add('today');
                 }
 
-                // Check if selected
                 if (datePickerSelected && isSameDay(dateObj, datePickerSelected)) {
                     cell.classList.add('selected');
                 }
 
-                // Check disabled: before min date
                 if (dateObj < minDate) {
                     cell.classList.add('disabled');
                 }
 
-                // For departure: must be at least arrival date + 1 day
                 if (activeDatePicker === 'dep' && arrivalDate) {
                     const minDep = new Date(arrivalDate);
                     minDep.setDate(arrivalDate.getDate() + 1);
@@ -2494,7 +2505,6 @@
                         const d = strToDate(dateVal);
                         if (d) {
                             datePickerTempDate = new Date(d);
-                            // Update visual selection
                             document.querySelectorAll('.date-grid .date-cell').forEach(el => el.classList.remove(
                             'selected'));
                             this.classList.add('selected');
@@ -2505,7 +2515,6 @@
                 grid.appendChild(cell);
             }
 
-            // Next month days to fill last row
             let totalCells = startOffset + daysInMonth;
             const remainder = totalCells % 7;
             if (remainder > 0) {
@@ -2521,7 +2530,6 @@
 
         function confirmDatePicker() {
             if (!activeDatePicker) return;
-            // Find the selected date from the grid
             const selectedCell = document.querySelector('.date-grid .date-cell.selected:not(.other-month)');
             let dateObj = null;
             if (selectedCell && selectedCell.dataset.date) {
@@ -2529,7 +2537,6 @@
             } else if (datePickerTempDate) {
                 dateObj = datePickerTempDate;
             } else {
-                // Fallback: use the first enabled date
                 const cells = document.querySelectorAll('.date-grid .date-cell:not(.disabled):not(.other-month)');
                 if (cells.length > 0) {
                     const firstEnabled = cells[0];
@@ -2544,14 +2551,12 @@
                 return;
             }
 
-            // Validate: min date
             const minDate = getMinDate();
             if (dateObj < minDate) {
                 showToast('Date Error', 'Arrival date must be at least 3 days from today.', false);
                 return;
             }
 
-            // For departure: must be at least arrival + 1 day
             if (activeDatePicker === 'dep') {
                 const arrVal = document.getElementById('arrDate').value;
                 if (arrVal) {
@@ -2567,25 +2572,20 @@
                 }
             }
 
-            // Update the hidden input and display
             const hiddenInput = document.getElementById(activeDatePicker + 'Date');
             const display = document.getElementById(activeDatePicker + 'DateDisplay');
             hiddenInput.value = dateToStr(dateObj);
             display.textContent = formatDateDisplay(dateObj);
             display.classList.remove('placeholder');
 
-            // Update the date display text
             const displayText = document.getElementById(activeDatePicker + 'ivalDateDisplay');
             if (displayText) {
                 displayText.textContent = formatDateShort(dateToStr(dateObj));
             }
 
-            // Store for later
             if (activeDatePicker === 'arr') {
                 window._arrDateObj = dateObj;
-                // Update departure min
                 updateDepMin();
-                // If departure is before new min, auto-update it
                 const depVal = document.getElementById('depDate').value;
                 if (depVal) {
                     const depDate = strToDate(depVal);
@@ -2611,12 +2611,10 @@
             }
 
             closeDatePicker();
-            // Re-render the date grid to update disabled states
             renderDateGrid();
         }
 
         function updateDateDisplayText() {
-            // Update the text displays under the date pickers
             const arrVal = document.getElementById('arrDate').value;
             const depVal = document.getElementById('depDate').value;
             const arrDisplayText = document.getElementById('arrivalDateDisplay');
@@ -2627,9 +2625,6 @@
             else depDisplayText.textContent = '';
         }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  UPDATE DEP MIN
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         function updateDepMin() {
             const arrVal = document.getElementById('arrDate').value;
             const depDateInput = document.getElementById('depDate');
@@ -2641,8 +2636,6 @@
                 if (arrDate) {
                     const minDep = new Date(arrDate);
                     minDep.setDate(arrDate.getDate() + 1);
-
-                    // Check if current departure is before min
                     const currentDep = depDateInput.value ? strToDate(depDateInput.value) : null;
                     if (!currentDep || currentDep < minDep) {
                         const newDep = new Date(minDep);
@@ -2654,7 +2647,6 @@
                         }
                         window._depDateObj = newDep;
                     } else {
-                        // Just update the display text
                         if (depDisplayText) {
                             depDisplayText.textContent = formatDateShort(depDateInput.value);
                         }
@@ -2663,7 +2655,6 @@
             } else {
                 if (depDisplayText) depDisplayText.textContent = '';
             }
-            // Re-render date grid if open
             if (document.getElementById('datePickerModal').classList.contains('open')) {
                 renderDateGrid();
             }
@@ -2953,30 +2944,55 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  UPDATE DASHBOARD UI
+        //  UPDATE DASHBOARD UI (with checkout tracking)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         function updateDashboardUI() {
             const today = new Date().toISOString().split('T')[0];
-            const activeToday = records.filter(r => r.status === 'Approved' && r.arrDate <= today && r.depDate >= today)
-            .length;
+
+            // Active: Approved, within date range, and NOT checked out
+            const activeToday = records.filter(r =>
+                r.status === 'Approved' &&
+                r.arrDate <= today &&
+                r.depDate >= today &&
+                r.checkedOut !== true
+            ).length;
+
             document.getElementById('capUsed').textContent = activeToday;
             document.getElementById('capFill').style.width = Math.min((activeToday / MAX_CAPACITY) * 100, 100) + '%';
 
             const approvedList = document.getElementById('approvedList');
+            // Show all approved stays, with checkout status
             const upcoming = records.filter(r => r.status === 'Approved');
             document.getElementById('upcomingCount').textContent = `${upcoming.length} Active Verified`;
-            if (upcoming.length === 0) approvedList.innerHTML = '<div class="empty-state">No current approved logs registered.</div>';
-            else approvedList.innerHTML = upcoming.map(r => `
-            <div class="booking-item">
-              <div class="booking-info">
-                <div class="booking-name">${r.name}</div>
-                <div class="booking-meta">Host: ${r.hostName} (T${r.hostTowerId})</div>
-                <div class="booking-meta2">Room ${r.hostRoom} | ${formatDate(r.arrDate)} to ${formatDate(r.depDate)}</div>
-                <div style="margin-top:3px;font-size:0.6rem;color:var(--amber);font-family:'DM Mono',monospace;">⏰ Depart by 11:00 AM on ${formatDate(r.depDate)}</div>
-              </div>
-              <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--green);border:1px solid var(--green);padding:2px 6px;border-radius:4px;transform:translateY(4px);">VERIFIED</div>
-            </div>
-          `).join('');
+
+            if (upcoming.length === 0) {
+                approvedList.innerHTML = '<div class="empty-state">No current approved logs registered.</div>';
+            } else {
+                approvedList.innerHTML = upcoming.map(r => {
+                    const isCheckedOut = r.checkedOut === true;
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    const isOverdue = r.depDate < todayStr && !isCheckedOut;
+
+                    return `
+                <div class="booking-item" style="${isOverdue ? 'border-left:3px solid var(--red);padding-left:8px;' : ''}">
+                  <div class="booking-info">
+                    <div class="booking-name">${r.name}</div>
+                    <div class="booking-meta">Host: ${r.hostName} (T${r.hostTowerId})</div>
+                    <div class="booking-meta2">Room ${r.hostRoom} | ${formatDate(r.arrDate)} to ${formatDate(r.depDate)}</div>
+                    <div style="margin-top:3px;font-size:0.6rem;font-family:'DM Mono',monospace;display:flex;gap:8px;flex-wrap:wrap;">
+                      <span style="color:var(--amber);">⏰ Depart by 11:00 AM on ${formatDate(r.depDate)}</span>
+                      ${isCheckedOut ? `<span style="color:var(--checkedout);">✓ Checked Out</span>` : 
+                        isOverdue ? `<span style="color:var(--red);">⚠️ OVERDUE</span>` : 
+                        `<span style="color:var(--green);">● Active</span>`}
+                    </div>
+                  </div>
+                  <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:${isCheckedOut ? 'var(--checkedout)' : 'var(--green)'};border:1px solid ${isCheckedOut ? 'var(--checkedout)' : 'var(--green)'};padding:2px 6px;border-radius:4px;transform:translateY(4px);flex-shrink:0;">
+                    ${isCheckedOut ? 'CHECKED OUT' : 'VERIFIED'}
+                  </div>
+                </div>
+              `;
+                }).join('');
+            }
 
             updatePendingCount();
             if (isAdminLoggedIn) renderAdminList();
@@ -2993,7 +3009,7 @@
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  TIME PICKER – with arrival restrictions
+        //  TIME PICKER
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         function initTimePicker() {
             const hourWheel = document.getElementById('hourWheel');
@@ -3194,7 +3210,43 @@
         });
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  SUBMIT REQUEST – PUSH TO FIREBASE
+        //  CHECKOUT FUNCTION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function markCheckedOut(firebaseId) {
+            const entry = records.find(r => r.firebaseId === firebaseId);
+            if (!entry) {
+                showToast('Error', 'Record not found.', false);
+                return;
+            }
+
+            if (entry.checkedOut === true) {
+                showToast('Already Checked Out', 'This guest has already been marked as checked out.', true);
+                return;
+            }
+
+            if (entry.status !== 'Approved') {
+                showToast('Not Approved', 'Only approved stays can be checked out.', false);
+                return;
+            }
+
+            if (confirm(`Confirm check-out for ${entry.name} (Room ${entry.hostRoom})?`)) {
+                const ref = db.ref('stayOverRecords').child(firebaseId);
+                ref.update({
+                    checkedOut: true,
+                    checkedOutAt: new Date().toISOString(),
+                    checkedOutBy: 'Admin'
+                }).then(() => {
+                    showToast('Checked Out', `${entry.name} has been marked as checked out.`, true);
+                    // The Firebase listener will update the UI automatically
+                }).catch((error) => {
+                    console.error('Checkout error:', error);
+                    showToast('Error', 'Could not mark as checked out. Please try again.', false);
+                });
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  SUBMIT REQUEST
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         let isSubmitting = false;
 
@@ -3218,7 +3270,6 @@
                     .classList.add('input-error');
                 hasError = true; }
 
-            // Check 3-day advance rule
             const arrDateVal = document.getElementById('arrDate').value;
             if (arrDateVal) {
                 const today = getToday();
@@ -3258,7 +3309,10 @@
                 depTime: '11:00 AM',
                 reasonType: document.getElementById('reasonType').value,
                 reasonText: document.getElementById('reasonText').value.trim(),
-                status: 'Pending'
+                status: 'Pending',
+                checkedOut: false,
+                checkedOutAt: null,
+                checkedOutBy: null
             };
 
             if (entry.arrDate > entry.depDate) return showToast('Chronological Error', 'Departure date must be on or after arrival date.',
@@ -3299,7 +3353,6 @@
 
                     document.getElementById('depTime').value = '11:00 AM';
 
-                    // Reset dates to default (3 days ahead)
                     const minDate = getMinDate();
                     document.getElementById('arrDate').value = dateToStr(minDate);
                     const arrDisplay = document.getElementById('arrDateDisplay');
@@ -3369,13 +3422,14 @@
                 const cls = r.status === 'Approved' ? 'status-approved' : r.status === 'Rejected' ?
                     'status-declined' : 'status-pending';
                 const timeLabel = r.arrTime && r.depTime ? `${r.arrTime} – ${r.depTime}` : 'Times not specified';
+                const checkedOutStatus = r.checkedOut ? ' ✓ Checked Out' : '';
                 return `
               <div class="booking-item" style="border:1px solid var(--border);padding:10px;border-radius:8px;margin-bottom:6px;background:var(--surface2);">
                 <div class="booking-info">
                   <div class="booking-name">Request ID: ${r.requestId}</div>
                   <div class="booking-meta">Host: ${r.hostName} (ID: ${r.hostId || 'N/A'}) | Room ${r.hostRoom}</div>
                   <div class="booking-meta2">${formatDate(r.arrDate)} to ${formatDate(r.depDate)} · ${timeLabel}</div>
-                  <div style="margin-top:4px;font-size:0.7rem;font-family:'DM Mono',monospace;" class="${cls}">Status: ${r.status.toUpperCase()}</div>
+                  <div style="margin-top:4px;font-size:0.7rem;font-family:'DM Mono',monospace;" class="${cls}">Status: ${r.status.toUpperCase()}${checkedOutStatus}</div>
                   ${r.status === 'Approved' ? `<div style="margin-top:3px;font-size:0.6rem;color:var(--amber);">⏰ Must vacate by 11:00 AM on ${formatDate(r.depDate)}</div>` : ''}
                 </div>
               </div>
@@ -3395,13 +3449,14 @@
                 const cls = r.status === 'Approved' ? 'status-approved' : r.status === 'Rejected' ?
                     'status-declined' : 'status-pending';
                 const timeLabel = r.arrTime && r.depTime ? `${r.arrTime} – ${r.depTime}` : 'Times not specified';
+                const checkedOutStatus = r.checkedOut ? ' ✓ Checked Out' : '';
                 return `
               <div class="booking-item" style="border:1px solid var(--border);padding:10px;border-radius:8px;margin-bottom:6px;background:var(--surface2);">
                 <div class="booking-info">
                   <div class="booking-name">Request ID: ${r.requestId}</div>
                   <div class="booking-meta">Host: ${r.hostName} (ID: ${r.hostId || 'N/A'}) | Room ${r.hostRoom}</div>
                   <div class="booking-meta2">${formatDate(r.arrDate)} to ${formatDate(r.depDate)} · ${timeLabel}</div>
-                  <div style="margin-top:4px;font-size:0.7rem;font-family:'DM Mono',monospace;" class="${cls}">Status: ${r.status.toUpperCase()}</div>
+                  <div style="margin-top:4px;font-size:0.7rem;font-family:'DM Mono',monospace;" class="${cls}">Status: ${r.status.toUpperCase()}${checkedOutStatus}</div>
                   ${r.status === 'Approved' ? `<div style="margin-top:3px;font-size:0.6rem;color:var(--amber);">⏰ Must vacate by 11:00 AM on ${formatDate(r.depDate)}</div>` : ''}
                 </div>
               </div>
@@ -3515,16 +3570,45 @@
             el.innerHTML = sorted.map(r => {
                 const cls = r.status === 'Approved' ? 'status-approved' : r.status === 'Rejected' ?
                     'status-declined' : 'status-pending';
-                let actions = r.status === 'Pending' ?
-                    `<button class="action-btn approve" onclick="setStatus('${r.firebaseId}','Approved')">Approve Entry</button>
-                 <button class="action-btn" onclick="setStatus('${r.firebaseId}','Rejected')">Decline</button>` :
-                    `<button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>`;
+                const isCheckedOut = r.checkedOut === true;
+
+                let actions = '';
+                if (r.status === 'Pending') {
+                    actions = `
+                <button class="action-btn approve" onclick="setStatus('${r.firebaseId}','Approved')">Approve Entry</button>
+                <button class="action-btn" onclick="setStatus('${r.firebaseId}','Rejected')">Decline</button>
+              `;
+                } else if (r.status === 'Approved') {
+                    if (isCheckedOut) {
+                        actions = `
+                  <span style="color:var(--checkedout);font-size:0.6rem;font-family:'DM Mono',monospace;">✓ Checked Out</span>
+                  <button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>
+                `;
+                    } else {
+                        actions = `
+                  <button class="action-btn checkout-btn" onclick="markCheckedOut('${r.firebaseId}')">✓ Mark Checked Out</button>
+                  <button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>
+                `;
+                    }
+                } else {
+                    actions = `<button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>`;
+                }
+
                 const timeLabel = r.arrTime && r.depTime ? `${r.arrTime} – ${r.depTime}` : 'Times not specified';
+                const checkedOutStatus = isCheckedOut ?
+                    `<span style="color:var(--checkedout);font-size:0.65rem;font-family:'DM Mono',monospace;">✓ Checked Out</span>` :
+                    r.status === 'Approved' ?
+                    `<span style="color:var(--green);font-size:0.65rem;font-family:'DM Mono',monospace;">● Active</span>` :
+                    '';
+
                 return `
               <div class="booking-item" style="flex-direction:column;gap:8px;background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
-                <div style="display:flex;justify-content:space-between;width:100%;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:4px;">
+                <div style="display:flex;justify-content:space-between;width:100%;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:4px;flex-wrap:wrap;gap:4px;">
                   <div class="booking-name" style="font-size:0.9rem;">${r.name} <span style="font-weight:normal;color:var(--muted);font-size:0.75rem;">[ID: ${r.studentId}]</span></div>
-                  <span class="${cls}" style="font-size:0.65rem;font-family:'DM Mono',monospace;font-weight:600;">// ${r.status.toUpperCase()}</span>
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <span class="${cls}" style="font-size:0.65rem;font-family:'DM Mono',monospace;font-weight:600;">// ${r.status.toUpperCase()}</span>
+                    ${checkedOutStatus}
+                  </div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr;gap:4px;font-size:0.75rem;color:#D8D8D8;">
                   <div><strong>Request ID:</strong> ${r.requestId}</div>
@@ -3532,12 +3616,13 @@
                   <div><strong>Host:</strong> ${r.hostName} (ID: ${r.hostId || 'N/A'})</div>
                   <div><strong>Temporal Scope:</strong> From ${formatDate(r.arrDate)} (${r.arrTime}) to ${formatDate(r.depDate)} (${r.depTime})</div>
                   <div><strong>Contact Vector:</strong> ${r.email} | Contact No: ${r.emContact}</div>
+                  ${isCheckedOut ? `<div style="color:var(--checkedout);"><strong>Checked Out At:</strong> ${r.checkedOutAt ? new Date(r.checkedOutAt).toLocaleString() : 'N/A'} by ${r.checkedOutBy || 'Admin'}</div>` : ''}
                   <div style="margin-top:3px;padding:4px 8px;background:rgba(0,0,0,0.2);border-radius:4px;border-left:2px solid var(--red);"><strong>Justification:</strong> ${r.reasonType} — <em>"${r.reasonText}"</em></div>
                   <div style="margin-top:3px;padding:4px 8px;background:rgba(245,158,11,0.08);border-radius:4px;border-left:2px solid var(--amber);color:var(--amber);font-size:0.7rem;">
                     ⏰ <strong>Departure Deadline:</strong> Must vacate by 11:00 AM on ${formatDate(r.depDate)}. Sanctions: formal warning, daily account charges, suspension.
                   </div>
                 </div>
-                <div style="display:flex;justify-content:flex-end;width:100%;gap:6px;margin-top:2px;">${actions}</div>
+                <div style="display:flex;justify-content:flex-end;width:100%;gap:6px;margin-top:2px;flex-wrap:wrap;">${actions}</div>
               </div>
             `;
             }).join('');
