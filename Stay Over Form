@@ -2687,69 +2687,71 @@
 
             if (actionType === 'new') {
                 statusHtml = `
-              <p><span style="color: #f59e0b; font-weight: bold;">⏳ Your request has been received and is pending approval.</span></p>
-              <p><strong>Your Request ID is: ${entry.requestId}</strong></p>
-              <p>Please keep this ID safe. You can use it to check your application status at any time.</p>
-              <p>Your request is now under review by the Off‑Campus Representative. You will receive a follow‑up email once a decision has been made.</p>
-            `;
+                    <p><span style="color: #f59e0b; font-weight: bold;">⏳ Your request has been received and is pending approval.</span></p>
+                    <p><strong>Your Request ID is: ${entry.requestId}</strong></p>
+                    <p><strong>Please keep this ID safe.</strong></p>
+                    <p><strong>You can use it to check your application status at any time.</strong></p>
+                    <p><strong>You WILL need it to check out digitally upon departure using the checkout QR code located on the physical sheet.</strong></p>
+                    <p>Your request is now under review by the Off‑Campus Representative. You will receive a follow‑up email once a decision has been made.</p>
+                `;
                 detailsHtml = `
-              <p><strong>Request Details:</strong><br />
-              • Host Resident: ${entry.hostName} (ID: ${entry.hostId || 'Not provided'})<br />
-              • Host Location: Tower ${entry.hostTowerId}, Room ${entry.hostRoom}<br />
-              • Stay Dates: ${arrivalDate} to ${departureDate}<br />
-              • Times: ${timeStr}<br />
-              • Reason: ${entry.reasonType}<br />
-              • Student ID: ${entry.studentId}</p>
-              <p>⚠️ <strong>REMINDER – 11:00 AM DEPARTURE:</strong><br />
-              You must vacate the room by <strong>11:00 AM</strong> on your departure date (${departureDate}).</p>
-            `;
+                    <p><strong>Request Details:</strong><br />
+                    • Host Resident: ${entry.hostName} (ID: ${entry.hostId || 'Not provided'})<br />
+                    • Host Location: Tower ${entry.hostTowerId}, Room ${entry.hostRoom}<br />
+                    • Stay Dates: ${arrivalDate} to ${departureDate}<br />
+                    • Times: ${timeStr}<br />
+                    • Reason: ${entry.reasonType}<br />
+                    • Student ID: ${entry.studentId}</p>
+                    <p>⚠️ <strong>REMINDER – 11:00 AM DEPARTURE:</strong><br />
+                    You must vacate the room by <strong>11:00 AM</strong> on your departure date (${departureDate}).</p>
+                `;
                 closingHtml = '<p>Should you require any further assistance while we process your request, please do not hesitate to reply to this email.</p>';
                 return `
-              <p>Dear ${entry.name},</p>
-              <p>Thank you for submitting your overnight stay request for ${hallName}. We truly appreciate your interest in our facilities.</p>
-              ${statusHtml}
-              ${detailsHtml}
-              ${closingHtml}
-              <p>Yours sincerely,<br /><strong>Damani Smith</strong><br />Off‑Campus Representative 2026‑2027<br />${hallName}</p>
-            `;
+                    <p>Dear ${entry.name},</p>
+                    <p>Thank you for submitting your overnight stay request for ${hallName}. We truly appreciate your interest in our facilities.</p>
+                    ${statusHtml}
+                    ${detailsHtml}
+                    ${closingHtml}
+                    <p>Yours sincerely,<br /><strong>Damani Smith</strong><br />Off‑Campus Representative 2026‑2027<br />${hallName}</p>
+                `;
             } else if (actionType === 'approved') {
                 statusHtml = `
-              <p style="color: #22c55e; font-weight: bold;">✅ Your request has been approved and you are authorised to stay overnight during your requested dates. Please ensure you comply with all hall regulations and present your ID upon request. Your cooperation ensures a safe and welcoming environment for all Towerites.</p>
-            `;
+                    <p style="color: #22c55e; font-weight: bold;">✅ Your request has been approved and you are authorised to stay overnight during your requested dates. Please ensure you comply with all hall regulations and present your ID upon request. Your cooperation ensures a safe and welcoming environment for all Towerites.</p>
+                `;
                 detailsHtml = `
-              <p><strong>Request ID: ${entry.requestId}</strong></p>
-              <p><strong>Request Details:</strong><br />
-              • Host Resident: ${entry.hostName} (ID: ${entry.hostId || 'Not provided'})<br />
-              • Host Location: Tower ${entry.hostTowerId}, Room ${entry.hostRoom}<br />
-              • Stay Dates: ${arrivalDate} to ${departureDate}<br />
-              • Times: ${timeStr}<br />
-              • Reason: ${entry.reasonType}<br />
-              • Student ID: ${entry.studentId}</p>
-              <p>⚠️ <strong>IMPORTANT – 11:00 AM DEPARTURE DEADLINE:</strong><br />
-              You are required to vacate the room by <strong>11:00 AM</strong> on <strong>${departureDate}</strong>. Overstaying beyond this time without an approved extension is a serious violation of hall policy.<br />
-              <span style="color:#ef4444;">⛔ Sanctions: Unauthorised overstay will result in a formal warning, daily charges applied to your student account, and potential suspension of future booking privileges.</span></p>
-            `;
+                    <p><strong>Request ID: ${entry.requestId}</strong></p>
+                    <p><strong>Request Details:</strong><br />
+                    • Host Resident: ${entry.hostName} (ID: ${entry.hostId || 'Not provided'})<br />
+                    • Host Location: Tower ${entry.hostTowerId}, Room ${entry.hostRoom}<br />
+                    • Stay Dates: ${arrivalDate} to ${departureDate}<br />
+                    • Times: ${timeStr}<br />
+                    • Reason: ${entry.reasonType}<br />
+                    • Student ID: ${entry.studentId}</p>
+                    <p>⚠️ <strong>IMPORTANT – 11:00 AM DEPARTURE DEADLINE:</strong><br />
+                    You are required to vacate the room by <strong>11:00 AM</strong> on <strong>${departureDate}</strong>. Overstaying beyond this time without an approved extension is a serious violation of hall policy.<br />
+                    <span style="color:#ef4444;">⛔ Sanctions: Unauthorised overstay will result in a formal warning, daily charges applied to your student account, and potential suspension of future booking privileges.</span></p>
+                `;
                 closingHtml = '<p>We look forward to having you on hall. Should you have any questions before your arrival, please do not hesitate to reply to this email.</p>';
                 return `
-              <p>Dear ${entry.name},</p>
-              ${statusHtml}
-              ${detailsHtml}
-              ${closingHtml}
-              <p>Yours sincerely,<br /><strong>Damani Smith</strong><br />Off‑Campus Representative 2026‑2027<br />${hallName}</p>
-            `;
+                    <p>Dear ${entry.name},</p>
+                    ${statusHtml}
+                    ${detailsHtml}
+                    ${closingHtml}
+                    <p>Yours sincerely,<br /><strong>Damani Smith</strong><br />Off‑Campus Representative 2026‑2027<br />${hallName}</p>
+                `;
             } else if (actionType === 'declined') {
                 statusHtml = `
-              <p style="color: #ef4444; font-weight: bold;">❌ Your request has been declined.</p>
-              <p><strong>Request ID: ${entry.requestId}</strong></p>
-              <p>If you believe this decision was made in error, or if you would like to resubmit a request with different dates, please contact the Off‑Campus Representative directly.</p>
-            `;
+                    <p style="color: #ef4444; font-weight: bold;">❌ Your request has been declined.</p>
+                    <p><strong>Request ID: ${entry.requestId}</strong></p>
+                    <p>If you believe this decision was made in error, or if you would like to resubmit a request with different dates, please contact the Off‑Campus Representative directly.</p>
+                `;
                 closingHtml = '<p>We understand this may be disappointing, and we encourage you to reach out if you need clarification or wish to explore alternative arrangements.</p>';
                 return `
-              <p>Dear ${entry.name},</p>
-              ${statusHtml}
-              ${closingHtml}
-              <p>Yours sincerely,<br /><strong>Damani Smith</strong><br />Off‑Campus Representative 2026‑2027<br />${hallName}</p>
-            `;
+                    <p>Dear ${entry.name},</p>
+                    ${statusHtml}
+                    ${closingHtml}
+                    <p>Yours sincerely,<br /><strong>Damani Smith</strong><br />Off‑Campus Representative 2026‑2027<br />${hallName}</p>
+                `;
             }
         }
 
@@ -2760,27 +2762,27 @@
             const hallName = 'the <strong>Elsa Leo‑Rhynie \'Towers\' Hall</strong>';
 
             return `
-            <p>Dear Admin,</p>
-            <p>A new stay‑over request requires your attention.</p>
-            <p><strong>Request ID: ${entry.requestId}</strong></p>
-            <p><strong>Student Details:</strong><br />
-            • Name: ${entry.name}<br />
-            • ID: ${entry.studentId}<br />
-            • Email: ${entry.email}<br />
-            • Emergency Contact: ${entry.emContact || 'Not provided'}</p>
-            <p><strong>Host Details:</strong><br />
-            • Host Name: ${entry.hostName}<br />
-            • Host ID: ${entry.hostId || 'Not provided'}<br />
-            • Location: Tower ${entry.hostTowerId}, Room ${entry.hostRoom}</p>
-            <p><strong>Stay Details:</strong><br />
-            • Dates: ${arrivalDate} to ${departureDate}<br />
-            • Times: ${timeStr}<br />
-            • Reason: ${entry.reasonType}<br />
-            • Additional Details: ${entry.reasonText || 'None provided'}</p>
-            <p>⚠️ <strong>11:00 AM Departure Rule applies.</strong> The guest must vacate by 11:00 AM on the departure date.</p>
-            <p>Please log in to the administrative console to approve or decline this request.</p>
-            <p style="color: #888; font-size: 0.9rem;">Submitted: ${entry.timestamp || new Date().toLocaleString()}</p>
-          `;
+                <p>Dear Admin,</p>
+                <p>A new stay‑over request requires your attention.</p>
+                <p><strong>Request ID: ${entry.requestId}</strong></p>
+                <p><strong>Student Details:</strong><br />
+                • Name: ${entry.name}<br />
+                • ID: ${entry.studentId}<br />
+                • Email: ${entry.email}<br />
+                • Emergency Contact: ${entry.emContact || 'Not provided'}</p>
+                <p><strong>Host Details:</strong><br />
+                • Host Name: ${entry.hostName}<br />
+                • Host ID: ${entry.hostId || 'Not provided'}<br />
+                • Location: Tower ${entry.hostTowerId}, Room ${entry.hostRoom}</p>
+                <p><strong>Stay Details:</strong><br />
+                • Dates: ${arrivalDate} to ${departureDate}<br />
+                • Times: ${timeStr}<br />
+                • Reason: ${entry.reasonType}<br />
+                • Additional Details: ${entry.reasonText || 'None provided'}</p>
+                <p>⚠️ <strong>11:00 AM Departure Rule applies.</strong> The guest must vacate by 11:00 AM on the departure date.</p>
+                <p>Please log in to the administrative console to approve or decline this request.</p>
+                <p style="color: #888; font-size: 0.9rem;">Submitted: ${entry.timestamp || new Date().toLocaleString()}</p>
+            `;
         }
 
         function sendStudentEmail(entry, actionType) {
@@ -2974,23 +2976,23 @@
                     const isOverdue = r.depDate < todayStr && !isCheckedOut;
 
                     return `
-                <div class="booking-item" style="${isOverdue ? 'border-left:3px solid var(--red);padding-left:8px;' : ''}">
-                  <div class="booking-info">
-                    <div class="booking-name">${r.name}</div>
-                    <div class="booking-meta">Host: ${r.hostName} (T${r.hostTowerId})</div>
-                    <div class="booking-meta2">Room ${r.hostRoom} | ${formatDate(r.arrDate)} to ${formatDate(r.depDate)}</div>
-                    <div style="margin-top:3px;font-size:0.6rem;font-family:'DM Mono',monospace;display:flex;gap:8px;flex-wrap:wrap;">
-                      <span style="color:var(--amber);">⏰ Depart by 11:00 AM on ${formatDate(r.depDate)}</span>
-                      ${isCheckedOut ? `<span style="color:var(--checkedout);">✓ Checked Out</span>` : 
-                        isOverdue ? `<span style="color:var(--red);">⚠️ OVERDUE</span>` : 
-                        `<span style="color:var(--green);">● Active</span>`}
-                    </div>
-                  </div>
-                  <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:${isCheckedOut ? 'var(--checkedout)' : 'var(--green)'};border:1px solid ${isCheckedOut ? 'var(--checkedout)' : 'var(--green)'};padding:2px 6px;border-radius:4px;transform:translateY(4px);flex-shrink:0;">
-                    ${isCheckedOut ? 'CHECKED OUT' : 'VERIFIED'}
-                  </div>
-                </div>
-              `;
+                        <div class="booking-item" style="${isOverdue ? 'border-left:3px solid var(--red);padding-left:8px;' : ''}">
+                          <div class="booking-info">
+                            <div class="booking-name">${r.name}</div>
+                            <div class="booking-meta">Host: ${r.hostName} (T${r.hostTowerId})</div>
+                            <div class="booking-meta2">Room ${r.hostRoom} | ${formatDate(r.arrDate)} to ${formatDate(r.depDate)}</div>
+                            <div style="margin-top:3px;font-size:0.6rem;font-family:'DM Mono',monospace;display:flex;gap:8px;flex-wrap:wrap;">
+                              <span style="color:var(--amber);">⏰ Depart by 11:00 AM on ${formatDate(r.depDate)}</span>
+                              ${isCheckedOut ? `<span style="color:var(--checkedout);">✓ Checked Out</span>` : 
+                                isOverdue ? `<span style="color:var(--red);">⚠️ OVERDUE</span>` : 
+                                `<span style="color:var(--green);">● Active</span>`}
+                            </div>
+                          </div>
+                          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:${isCheckedOut ? 'var(--checkedout)' : 'var(--green)'};border:1px solid ${isCheckedOut ? 'var(--checkedout)' : 'var(--green)'};padding:2px 6px;border-radius:4px;transform:translateY(4px);flex-shrink:0;">
+                            ${isCheckedOut ? 'CHECKED OUT' : 'VERIFIED'}
+                          </div>
+                        </div>
+                    `;
                 }).join('');
             }
 
@@ -3424,16 +3426,16 @@
                 const timeLabel = r.arrTime && r.depTime ? `${r.arrTime} – ${r.depTime}` : 'Times not specified';
                 const checkedOutStatus = r.checkedOut ? ' ✓ Checked Out' : '';
                 return `
-              <div class="booking-item" style="border:1px solid var(--border);padding:10px;border-radius:8px;margin-bottom:6px;background:var(--surface2);">
-                <div class="booking-info">
-                  <div class="booking-name">Request ID: ${r.requestId}</div>
-                  <div class="booking-meta">Host: ${r.hostName} (ID: ${r.hostId || 'N/A'}) | Room ${r.hostRoom}</div>
-                  <div class="booking-meta2">${formatDate(r.arrDate)} to ${formatDate(r.depDate)} · ${timeLabel}</div>
-                  <div style="margin-top:4px;font-size:0.7rem;font-family:'DM Mono',monospace;" class="${cls}">Status: ${r.status.toUpperCase()}${checkedOutStatus}</div>
-                  ${r.status === 'Approved' ? `<div style="margin-top:3px;font-size:0.6rem;color:var(--amber);">⏰ Must vacate by 11:00 AM on ${formatDate(r.depDate)}</div>` : ''}
-                </div>
-              </div>
-            `;
+                    <div class="booking-item" style="border:1px solid var(--border);padding:10px;border-radius:8px;margin-bottom:6px;background:var(--surface2);">
+                      <div class="booking-info">
+                        <div class="booking-name">Request ID: ${r.requestId}</div>
+                        <div class="booking-meta">Host: ${r.hostName} (ID: ${r.hostId || 'N/A'}) | Room ${r.hostRoom}</div>
+                        <div class="booking-meta2">${formatDate(r.arrDate)} to ${formatDate(r.depDate)} · ${timeLabel}</div>
+                        <div style="margin-top:4px;font-size:0.7rem;font-family:'DM Mono',monospace;" class="${cls}">Status: ${r.status.toUpperCase()}${checkedOutStatus}</div>
+                        ${r.status === 'Approved' ? `<div style="margin-top:3px;font-size:0.6rem;color:var(--amber);">⏰ Must vacate by 11:00 AM on ${formatDate(r.depDate)}</div>` : ''}
+                      </div>
+                    </div>
+                `;
             }).join('');
         }
 
@@ -3451,16 +3453,16 @@
                 const timeLabel = r.arrTime && r.depTime ? `${r.arrTime} – ${r.depTime}` : 'Times not specified';
                 const checkedOutStatus = r.checkedOut ? ' ✓ Checked Out' : '';
                 return `
-              <div class="booking-item" style="border:1px solid var(--border);padding:10px;border-radius:8px;margin-bottom:6px;background:var(--surface2);">
-                <div class="booking-info">
-                  <div class="booking-name">Request ID: ${r.requestId}</div>
-                  <div class="booking-meta">Host: ${r.hostName} (ID: ${r.hostId || 'N/A'}) | Room ${r.hostRoom}</div>
-                  <div class="booking-meta2">${formatDate(r.arrDate)} to ${formatDate(r.depDate)} · ${timeLabel}</div>
-                  <div style="margin-top:4px;font-size:0.7rem;font-family:'DM Mono',monospace;" class="${cls}">Status: ${r.status.toUpperCase()}${checkedOutStatus}</div>
-                  ${r.status === 'Approved' ? `<div style="margin-top:3px;font-size:0.6rem;color:var(--amber);">⏰ Must vacate by 11:00 AM on ${formatDate(r.depDate)}</div>` : ''}
-                </div>
-              </div>
-            `;
+                    <div class="booking-item" style="border:1px solid var(--border);padding:10px;border-radius:8px;margin-bottom:6px;background:var(--surface2);">
+                      <div class="booking-info">
+                        <div class="booking-name">Request ID: ${r.requestId}</div>
+                        <div class="booking-meta">Host: ${r.hostName} (ID: ${r.hostId || 'N/A'}) | Room ${r.hostRoom}</div>
+                        <div class="booking-meta2">${formatDate(r.arrDate)} to ${formatDate(r.depDate)} · ${timeLabel}</div>
+                        <div style="margin-top:4px;font-size:0.7rem;font-family:'DM Mono',monospace;" class="${cls}">Status: ${r.status.toUpperCase()}${checkedOutStatus}</div>
+                        ${r.status === 'Approved' ? `<div style="margin-top:3px;font-size:0.6rem;color:var(--amber);">⏰ Must vacate by 11:00 AM on ${formatDate(r.depDate)}</div>` : ''}
+                      </div>
+                    </div>
+                `;
             }).join('');
         }
 
@@ -3575,20 +3577,20 @@
                 let actions = '';
                 if (r.status === 'Pending') {
                     actions = `
-                <button class="action-btn approve" onclick="setStatus('${r.firebaseId}','Approved')">Approve Entry</button>
-                <button class="action-btn" onclick="setStatus('${r.firebaseId}','Rejected')">Decline</button>
-              `;
+                        <button class="action-btn approve" onclick="setStatus('${r.firebaseId}','Approved')">Approve Entry</button>
+                        <button class="action-btn" onclick="setStatus('${r.firebaseId}','Rejected')">Decline</button>
+                    `;
                 } else if (r.status === 'Approved') {
                     if (isCheckedOut) {
                         actions = `
-                  <span style="color:var(--checkedout);font-size:0.6rem;font-family:'DM Mono',monospace;">✓ Checked Out</span>
-                  <button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>
-                `;
+                            <span style="color:var(--checkedout);font-size:0.6rem;font-family:'DM Mono',monospace;">✓ Checked Out</span>
+                            <button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>
+                        `;
                     } else {
                         actions = `
-                  <button class="action-btn checkout-btn" onclick="markCheckedOut('${r.firebaseId}')">✓ Mark Checked Out</button>
-                  <button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>
-                `;
+                            <button class="action-btn checkout-btn" onclick="markCheckedOut('${r.firebaseId}')">✓ Mark Checked Out</button>
+                            <button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>
+                        `;
                     }
                 } else {
                     actions = `<button class="action-btn" onclick="deleteRecord('${r.firebaseId}')">Purge Logs</button>`;
@@ -3602,29 +3604,29 @@
                     '';
 
                 return `
-              <div class="booking-item" style="flex-direction:column;gap:8px;background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
-                <div style="display:flex;justify-content:space-between;width:100%;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:4px;flex-wrap:wrap;gap:4px;">
-                  <div class="booking-name" style="font-size:0.9rem;">${r.name} <span style="font-weight:normal;color:var(--muted);font-size:0.75rem;">[ID: ${r.studentId}]</span></div>
-                  <div style="display:flex;gap:8px;align-items:center;">
-                    <span class="${cls}" style="font-size:0.65rem;font-family:'DM Mono',monospace;font-weight:600;">// ${r.status.toUpperCase()}</span>
-                    ${checkedOutStatus}
-                  </div>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr;gap:4px;font-size:0.75rem;color:#D8D8D8;">
-                  <div><strong>Request ID:</strong> ${r.requestId}</div>
-                  <div><strong>Target Placement:</strong> Tower ${r.hostTowerId} | Room ${r.hostRoom}</div>
-                  <div><strong>Host:</strong> ${r.hostName} (ID: ${r.hostId || 'N/A'})</div>
-                  <div><strong>Temporal Scope:</strong> From ${formatDate(r.arrDate)} (${r.arrTime}) to ${formatDate(r.depDate)} (${r.depTime})</div>
-                  <div><strong>Contact Vector:</strong> ${r.email} | Contact No: ${r.emContact}</div>
-                  ${isCheckedOut ? `<div style="color:var(--checkedout);"><strong>Checked Out At:</strong> ${r.checkedOutAt ? new Date(r.checkedOutAt).toLocaleString() : 'N/A'} by ${r.checkedOutBy || 'Admin'}</div>` : ''}
-                  <div style="margin-top:3px;padding:4px 8px;background:rgba(0,0,0,0.2);border-radius:4px;border-left:2px solid var(--red);"><strong>Justification:</strong> ${r.reasonType} — <em>"${r.reasonText}"</em></div>
-                  <div style="margin-top:3px;padding:4px 8px;background:rgba(245,158,11,0.08);border-radius:4px;border-left:2px solid var(--amber);color:var(--amber);font-size:0.7rem;">
-                    ⏰ <strong>Departure Deadline:</strong> Must vacate by 11:00 AM on ${formatDate(r.depDate)}. Sanctions: formal warning, daily account charges, suspension.
-                  </div>
-                </div>
-                <div style="display:flex;justify-content:flex-end;width:100%;gap:6px;margin-top:2px;flex-wrap:wrap;">${actions}</div>
-              </div>
-            `;
+                    <div class="booking-item" style="flex-direction:column;gap:8px;background:var(--surface2);padding:1rem;border-radius:10px;border:1px solid var(--border);">
+                      <div style="display:flex;justify-content:space-between;width:100%;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:4px;flex-wrap:wrap;gap:4px;">
+                        <div class="booking-name" style="font-size:0.9rem;">${r.name} <span style="font-weight:normal;color:var(--muted);font-size:0.75rem;">[ID: ${r.studentId}]</span></div>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                          <span class="${cls}" style="font-size:0.65rem;font-family:'DM Mono',monospace;font-weight:600;">// ${r.status.toUpperCase()}</span>
+                          ${checkedOutStatus}
+                        </div>
+                      </div>
+                      <div style="display:grid;grid-template-columns:1fr;gap:4px;font-size:0.75rem;color:#D8D8D8;">
+                        <div><strong>Request ID:</strong> ${r.requestId}</div>
+                        <div><strong>Target Placement:</strong> Tower ${r.hostTowerId} | Room ${r.hostRoom}</div>
+                        <div><strong>Host:</strong> ${r.hostName} (ID: ${r.hostId || 'N/A'})</div>
+                        <div><strong>Temporal Scope:</strong> From ${formatDate(r.arrDate)} (${r.arrTime}) to ${formatDate(r.depDate)} (${r.depTime})</div>
+                        <div><strong>Contact Vector:</strong> ${r.email} | Contact No: ${r.emContact}</div>
+                        ${isCheckedOut ? `<div style="color:var(--checkedout);"><strong>Checked Out At:</strong> ${r.checkedOutAt ? new Date(r.checkedOutAt).toLocaleString() : 'N/A'} by ${r.checkedOutBy || 'Admin'}</div>` : ''}
+                        <div style="margin-top:3px;padding:4px 8px;background:rgba(0,0,0,0.2);border-radius:4px;border-left:2px solid var(--red);"><strong>Justification:</strong> ${r.reasonType} — <em>"${r.reasonText}"</em></div>
+                        <div style="margin-top:3px;padding:4px 8px;background:rgba(245,158,11,0.08);border-radius:4px;border-left:2px solid var(--amber);color:var(--amber);font-size:0.7rem;">
+                          ⏰ <strong>Departure Deadline:</strong> Must vacate by 11:00 AM on ${formatDate(r.depDate)}. Sanctions: formal warning, daily account charges, suspension.
+                        </div>
+                      </div>
+                      <div style="display:flex;justify-content:flex-end;width:100%;gap:6px;margin-top:2px;flex-wrap:wrap;">${actions}</div>
+                    </div>
+                `;
             }).join('');
         }
 
