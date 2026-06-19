@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Sign Out | Elsa Leo‑Rhynie Hall</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --red: #E31837;
+            --red-dark: #990B1B;
+            --red-glow: rgba(227, 24, 55, 0.15);
+            --silver: #E0E0E0;
+            --silver-dark: #A0A0A0;
+            --black: #050505;
+            --surface: #121212;
+            --surface2: #1A1A1A;
+            --border: rgba(255, 255, 255, 0.06);
+            --text: #F5F5F5;
+            --muted: #888;
+            --green: #22c55e;
+            --amber: #F59E0B;
+            --checkedout: #6B7280;
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--black);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            margin: 0;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            max-width: 520px;
+            width: 100%;
+            padding: 2rem 1.8rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 40px var(--red-glow);
+            border-top: 4px solid var(--red);
+            animation: fadeUp 0.5s ease both;
+        }
+        .logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .logos img {
+            height: 90px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 16px var(--red-glow));
+        }
+        .card-header {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+        .card-header .icon {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .card-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.4rem;
+            letter-spacing: 0.03em;
+            line-height: 1;
+            color: var(--text);
+        }
+        .card-header h1 span {
+            color: var(--red);
+        }
+        .card-header p {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+        }
+
+        .field {
+            margin-bottom: 1.2rem;
+        }
+        .field label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .field input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            padding: 12px 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .field input:focus {
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px var(--red-glow);
+        }
+        .field input::placeholder {
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        .sample-hint {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 6px;
+            text-align: center;
+        }
+        .sample-hint code {
+            background: var(--surface2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            color: var(--silver);
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .sample-hint code:hover {
+            background: var(--border);
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--silver-dark);
+            padding: 12px 14px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.8rem;
+            color: var(--silver);
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+            display: none;
+        }
+        .info-box.show {
+            display: block;
+        }
+        .info-box .name {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .info-box .room {
+            color: var(--amber);
+        }
+        .info-box .status-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: 'DM Mono', monospace;
+            margin-top: 4px;
+        }
+        .status-approved {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--green);
+        }
+        .status-error {
+            background: rgba(227, 24, 55, 0.15);
+            color: var(--red);
+        }
+        .status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--amber);
+        }
+        .status-checkedout {
+            background: rgba(107, 114, 128, 0.15);
+            color: var(--checkedout);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+        .btn:hover:not(:disabled) {
+            background: var(--red-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(227, 24, 55, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .offline-banner {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.7rem;
+            color: var(--amber);
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+            font-family: 'DM Mono', monospace;
+        }
+        .offline-banner.show {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--green);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            font-size: 0.85rem;
+            max-width: 400px;
+            width: 90%;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            text-align: center;
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .toast.error {
+            border-left-color: var(--red);
+        }
+        .toast .toast-title {
+            font-weight: 600;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.5rem 1rem;
+            }
+            .card-header h1 {
+                font-size: 2rem;
+            }
+            .card-header .icon {
+                font-size: 2rem;
+            }
+            .btn {
+                font-size: 1rem;
+                padding: 12px;
+            }
+            .logos img {
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="logos">
+            <img src="https://i.postimg.cc/bwQbG84t/Towers-Logo.png" alt="Towers Hall" />
+            <img src="https://i.postimg.cc/9QGT4VsQ/Off-Campus-Logo-1.png" alt="Off-Campus" />
+        </div>
+
+        <div class="card-header">
+            <span class="icon">🚪</span>
+            <h1>Sign <span>Out</span></h1>
+            <p>Confirm your departure from the hall</p>
+        </div>
+
+        <div class="offline-banner" id="offlineBanner">📡 You are offline. Your sign-out will be saved and sent when you reconnect.</div>
+
+        <div class="field">
+            <label for="requestIdInput">Your Request ID</label>
+            <input type="text" id="requestIdInput" placeholder="e.g. A3F9K2M7" autocomplete="off" value="A3F9K2M7" />
+        </div>
+
+        <div class="sample-hint">
+            🔍 <span style="color:var(--muted);">Sample ID for testing:</span>
+            <code id="sampleCode">A3F9K2M7</code>
+            <span style="color:var(--muted);font-size:0.7rem;margin-left:4px;">(click to copy)</span>
+        </div>
+
+        <div class="info-box" id="infoBox">
+            <div id="infoContent"></div>
+        </div>
+
+        <button class="btn" id="actionBtn">Check Details</button>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><div class="toast-title" id="toastTitle"></div><div id="toastMsg" style="font-size:0.78rem;color:var(--muted);margin-top:4px;"></div></div>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  FIREBASE CONFIG (same as main form)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const firebaseConfig = {
+            apiKey: "AIzaSyDcNxfpqJil9WcLXllPptW3aiEBdZdD05E",
+            authDomain: "stay-overnight-form.firebaseapp.com",
+            databaseURL: "https://stay-overnight-form-default-rtdb.firebaseio.com",
+            projectId: "stay-overnight-form",
+            storageBucket: "stay-overnight-form.firebasestorage.app",
+            messagingSenderId: "645328395434",
+            appId: "1:645328395434:web:844bdfa0cb8191499084d3"
+        };
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  EMAILJS CONFIG
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const EMAILJS_CONFIG = {
+            PUBLIC_KEY: 'XNplUt8_iHMHhn41G',
+            SERVICE_ID: 'service_xuiw4nc',
+            TEMPLATE_ID: 'template_3vlb82p',
+            ADMIN_EMAIL: 'elroffcampus@gmail.com'
+        };
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  OFFLINE SYNC QUEUE (localStorage)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const QUEUE_KEY = 'checkoutQueue';
+
+        function getQueue() {
+            try { return JSON.parse(localStorage.getItem(QUEUE_KEY)) || []; } catch { return []; }
+        }
+
+        function saveQueue(queue) {
+            localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+        }
+
+        function addToQueue(requestId, name, email, room) {
+            const queue = getQueue();
+            queue.push({ requestId, name, email, room, timestamp: new Date().toISOString(), attempted: false });
+            saveQueue(queue);
+            processQueue();
+        }
+
+        function processQueue() {
+            if (!navigator.onLine) {
+                document.getElementById('offlineBanner').classList.add('show');
+                return;
+            }
+            document.getElementById('offlineBanner').classList.remove('show');
+
+            const queue = getQueue();
+            const pending = queue.filter(item => !item.attempted);
+            if (pending.length === 0) return;
+
+            const db = firebase.database();
+            const ref = db.ref('stayOverRecords');
+            let completed = 0;
+
+            pending.forEach((item, index) => {
+                ref.orderByChild('requestId').equalTo(item.requestId).once('value')
+                    .then(snapshot => {
+                        const data = snapshot.val();
+                        if (data) {
+                            const key = Object.keys(data)[0];
+                            const record = data[key];
+                            if (record.checkedOut !== true) {
+                                return ref.child(key).update({
+                                    checkedOut: true,
+                                    checkedOutAt: item.timestamp || new Date().toISOString(),
+                                    checkedOutBy: 'Student (Offline)'
+                                });
+                            }
+                        }
+                        return Promise.resolve();
+                    })
+                    .then(() => {
+                        queue[index].attempted = true;
+                        completed++;
+                        if (completed === pending.length) {
+                            const newQueue = queue.filter(q => !q.attempted);
+                            saveQueue(newQueue);
+                            pending.forEach(syncedItem => {
+                                ref.orderByChild('requestId').equalTo(syncedItem.requestId).once('value')
+                                    .then(snap => {
+                                        const d = snap.val();
+                                        if (d) {
+                                            const k = Object.keys(d)[0];
+                                            const record = d[k];
+                                            sendCheckoutEmail(record);
+                                            sendStudentThankYou(record);
+                                        }
+                                    });
+                            });
+                            showToast('Offline Sync Complete', `${completed} checkout(s) uploaded.`, false);
+                            const currentId = document.getElementById('requestIdInput').value.trim();
+                            if (currentId) lookupRequest(currentId);
+                        }
+                    })
+                    .catch(err => {
+                        console.warn('Sync error for', item.requestId, err);
+                        completed++;
+                    });
+            });
+
+            setTimeout(() => {
+                const remaining = getQueue().filter(q => !q.attempted);
+                if (remaining.length > 0) setTimeout(processQueue, 30000);
+            }, 5000);
+        }
+
+        window.addEventListener('online', () => {
+            document.getElementById('offlineBanner').classList.remove('show');
+            processQueue();
+        });
+        window.addEventListener('offline', () => {
+            document.getElementById('offlineBanner').classList.add('show');
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INIT FIREBASE & EMAILJS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        if (typeof firebase !== 'undefined') {
+            firebase.initializeApp(firebaseConfig);
+            console.log('✅ Firebase initialized');
+        } else {
+            console.error('❌ Firebase SDK not loaded!');
+        }
+
+        (function initEmailJS() {
+            try {
+                emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+                console.log('✅ EmailJS initialized');
+            } catch (e) { console.warn('EmailJS init failed.', e); }
+        })();
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DOM REFS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const input = document.getElementById('requestIdInput');
+        const actionBtn = document.getElementById('actionBtn');
+        const infoBox = document.getElementById('infoBox');
+        const infoContent = document.getElementById('infoContent');
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toastTitle');
+        const toastMsg = document.getElementById('toastMsg');
+
+        let currentRecord = null;
+        let isCheckoutMode = false;
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  LOOKUP REQUEST (with fallback)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function lookupRequest(requestId) {
+            return new Promise((resolve, reject) => {
+                if (!requestId) {
+                    resolve(null);
+                    return;
+                }
+
+                const db = firebase.database();
+                const ref = db.ref('stayOverRecords');
+
+                // Primary: use orderByChild
+                ref.orderByChild('requestId').equalTo(requestId).once('value')
+                    .then(snapshot => {
+                        const data = snapshot.val();
+                        if (data) {
+                            const key = Object.keys(data)[0];
+                            const record = data[key];
+                            record.firebaseId = key;
+                            resolve(record);
+                        } else {
+                            // Fallback: read all and filter manually
+                            console.warn('orderByChild returned nothing, trying fallback...');
+                            ref.once('value')
+                                .then(allSnap => {
+                                    const allData = allSnap.val();
+                                    if (!allData) { resolve(null); return; }
+                                    let found = null;
+                                    for (const key in allData) {
+                                        if (allData[key].requestId === requestId) {
+                                            found = allData[key];
+                                            found.firebaseId = key;
+                                            break;
+                                        }
+                                    }
+                                    resolve(found);
+                                })
+                                .catch(fallbackErr => reject(fallbackErr));
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Primary lookup error:', err);
+                        // Try fallback on error
+                        ref.once('value')
+                            .then(allSnap => {
+                                const allData = allSnap.val();
+                                if (!allData) { resolve(null); return; }
+                                let found = null;
+                                for (const key in allData) {
+                                    if (allData[key].requestId === requestId) {
+                                        found = allData[key];
+                                        found.firebaseId = key;
+                                        break;
+                                    }
+                                }
+                                resolve(found);
+                            })
+                            .catch(fallbackErr => reject(fallbackErr));
+                    });
+            });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  UPDATE UI AFTER LOOKUP
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function displayRecord(record) {
+            if (!record) {
+                infoBox.classList.add('show');
+                infoContent.innerHTML = `
+                    <div style="color:var(--red);">
+                        <strong>❌ Not Found</strong><br />
+                        No stay-over request matches this ID. Please check and try again.
+                    </div>
+                `;
+                actionBtn.disabled = false;
+                actionBtn.textContent = 'Check Details';
+                isCheckoutMode = false;
+                currentRecord = null;
+                return;
+            }
+
+            currentRecord = record;
+
+            let statusHtml = '';
+            let canCheckout = false;
+            const status = record.status;
+            const checkedOut = record.checkedOut === true;
+
+            if (status === 'Approved' && !checkedOut) {
+                canCheckout = true;
+                statusHtml = `<span class="status-badge status-approved">✅ APPROVED</span>`;
+            } else if (status === 'Approved' && checkedOut) {
+                statusHtml = `<span class="status-badge status-checkedout">✓ CHECKED OUT</span>`;
+            } else if (status === 'Pending') {
+                statusHtml = `<span class="status-badge status-pending">⏳ PENDING</span>`;
+            } else if (status === 'Rejected') {
+                statusHtml = `<span class="status-badge status-error">❌ DECLINED</span>`;
+            } else {
+                statusHtml = `<span class="status-badge status-error">⚠️ UNKNOWN</span>`;
+            }
+
+            const arrival = record.arrDate ? new Date(record.arrDate + 'T12:00:00').toLocaleDateString() : 'N/A';
+            const departure = record.depDate ? new Date(record.depDate + 'T12:00:00').toLocaleDateString() : 'N/A';
+
+            infoBox.classList.add('show');
+            infoContent.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+                    <span class="name">${record.name || 'Unnamed'}</span>
+                    ${statusHtml}
+                </div>
+                <div style="margin-top:4px;font-size:0.75rem;color:var(--silver-dark);">
+                    Host: ${record.hostName || 'N/A'} · Room: <span class="room">${record.hostRoom || 'N/A'}</span>
+                </div>
+                <div style="margin-top:2px;font-size:0.7rem;color:var(--muted);">
+                    Stay: ${arrival} → ${departure} · ${record.arrTime || ''} – ${record.depTime || ''}
+                </div>
+                ${canCheckout ? `<div style="margin-top:8px;color:var(--green);font-weight:500;font-size:0.8rem;">✓ You can check out now.</div>` : ''}
+            `;
+
+            if (canCheckout) {
+                actionBtn.textContent = '✅ Confirm Check-Out';
+                isCheckoutMode = true;
+                actionBtn.disabled = false;
+            } else {
+                actionBtn.textContent = 'Check Details';
+                isCheckoutMode = false;
+                actionBtn.disabled = false;
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  HANDLE BUTTON CLICK
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        async function handleAction() {
+            const id = input.value.trim().toUpperCase();
+            if (!id || id.length < 4) {
+                showToast('Invalid ID', 'Please enter a valid Request ID (at least 4 characters).', false);
+                return;
+            }
+
+            if (isCheckoutMode && currentRecord && currentRecord.status === 'Approved' && !currentRecord.checkedOut) {
+                performCheckout();
+                return;
+            }
+
+            actionBtn.disabled = true;
+            actionBtn.innerHTML = '<span class="spinner"></span> Searching...';
+
+            try {
+                const record = await lookupRequest(id);
+                displayRecord(record);
+                if (!record) {
+                    actionBtn.textContent = 'Check Details';
+                    isCheckoutMode = false;
+                }
+            } catch (err) {
+                console.error('Lookup error:', err);
+                let errorMsg = 'An unexpected error occurred. Please try again.';
+                if (err.message && err.message.includes('permission')) {
+                    errorMsg = 'Permission denied. Please check Firebase rules.';
+                } else if (err.message && err.message.includes('network')) {
+                    errorMsg = 'Network error. Please check your internet connection.';
+                } else if (err.message) {
+                    errorMsg = `Error: ${err.message}`;
+                }
+                infoBox.classList.add('show');
+                infoContent.innerHTML = `
+                    <div style="color:var(--red);">
+                        <strong>⚠️ Error</strong><br />
+                        ${errorMsg}
+                        <br /><br />
+                        <span style="font-size:0.7rem;color:var(--muted);">
+                            Check the browser console (F12) for more details.
+                        </span>
+                    </div>
+                `;
+                showToast('Error', 'Could not look up the request. See details below.', false);
+                actionBtn.textContent = 'Check Details';
+                isCheckoutMode = false;
+            } finally {
+                actionBtn.disabled = false;
+                if (!isCheckoutMode && currentRecord && currentRecord.status === 'Approved' && !currentRecord.checkedOut) {
+                    actionBtn.textContent = '✅ Confirm Check-Out';
+                    isCheckoutMode = true;
+                }
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  SEND ADMIN NOTIFICATION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function sendCheckoutEmail(entry) {
+            const subject = `🚪 Check-Out Confirmed – ${entry.name} (${entry.requestId})`;
+            const message = `
+                <p><strong>${entry.name}</strong> has checked out of the <strong>Elsa Leo‑Rhynie Hall</strong>.</p>
+                <p><strong>Request ID:</strong> ${entry.requestId}</p>
+                <p><strong>Room:</strong> Tower ${entry.hostTowerId}, Room ${entry.hostRoom}</p>
+                <p><strong>Host:</strong> ${entry.hostName} (ID: ${entry.hostId || 'N/A'})</p>
+                <p><strong>Check-Out Time:</strong> ${new Date().toLocaleString()}</p>
+                <p><strong>Checked Out By:</strong> Student (via checkout page)</p>
+                <p style="color:#888;font-size:0.9rem;">This is an automated notification.</p>
+            `;
+
+            return emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_ID, {
+                    to_name: 'Admin',
+                    to_email: EMAILJS_CONFIG.ADMIN_EMAIL,
+                    subject: subject,
+                    message: message
+                }
+            ).then(() => true).catch(err => { console.error('Admin email error:', err); return false; });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  SEND STUDENT THANK YOU EMAIL
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function sendStudentThankYou(entry) {
+            const subject = `✅ Check-Out Confirmed – Thank you for staying at the Elsa Leo‑Rhynie Hall`;
+            const checkOutTime = new Date().toLocaleString();
+
+            const message = `
+                <p>Dear <strong>${entry.name}</strong>,</p>
+
+                <p>Thank you for staying at the <strong>Elsa Leo‑Rhynie Hall</strong>. Your check-out has been confirmed.</p>
+
+                <p><strong>Request ID:</strong> ${entry.requestId}<br />
+                <strong>Room:</strong> Tower ${entry.hostTowerId}, Room ${entry.hostRoom}<br />
+                <strong>Check-Out Time:</strong> ${checkOutTime}</p>
+
+                <p>We hope to welcome you again soon.</p>
+
+                <p>Kind Regards,<br />
+                <strong>Damani Smith</strong><br />
+                Off‑Campus Representative<br />
+                Elsa Leo‑Rhynie 'Towers' Hall</p>
+
+                <p style="color:#888;font-size:0.8rem;">Automated confirmation – please do not reply.</p>
+            `;
+
+            return emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_ID, {
+                    to_name: entry.name,
+                    to_email: entry.email,
+                    subject: subject,
+                    message: message
+                }
+            ).then(() => true).catch(err => { console.error('Student email error:', err); return false; });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PERFORM CHECKOUT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function performCheckout() {
+            if (!currentRecord || currentRecord.checkedOut === true) {
+                showToast('Already Done', 'This stay has already been checked out.', false);
+                actionBtn.textContent = 'Check Details';
+                isCheckoutMode = false;
+                return;
+            }
+            if (currentRecord.status !== 'Approved') {
+                showToast('Not Approved', 'Only approved stays can be checked out.', false);
+                actionBtn.textContent = 'Check Details';
+                isCheckoutMode = false;
+                return;
+            }
+
+            actionBtn.disabled = true;
+            actionBtn.innerHTML = '<span class="spinner"></span> Processing...';
+
+            const db = firebase.database();
+            const ref = db.ref('stayOverRecords').child(currentRecord.firebaseId);
+            const now = new Date().toISOString();
+
+            ref.update({
+                checkedOut: true,
+                checkedOutAt: now,
+                checkedOutBy: 'Student'
+            })
+            .then(() => {
+                currentRecord.checkedOut = true;
+                currentRecord.checkedOutAt = now;
+
+                Promise.all([
+                    sendCheckoutEmail(currentRecord),
+                    sendStudentThankYou(currentRecord)
+                ]).then(([adminSent, studentSent]) => {
+                    if (adminSent && studentSent) {
+                        showToast('✅ Checked Out Successfully', 'You have been signed out. A thank-you email has been sent to you.', true);
+                    } else if (adminSent) {
+                        showToast('✅ Checked Out', 'You have been signed out. (Student email failed.)', true);
+                    } else if (studentSent) {
+                        showToast('✅ Checked Out', 'You have been signed out. (Admin email failed.)', true);
+                    } else {
+                        showToast('✅ Checked Out', 'You have been signed out. (Email notifications failed.)', true);
+                    }
+                });
+
+                actionBtn.textContent = '✓ Done';
+                actionBtn.disabled = true;
+                displayRecord(currentRecord);
+            })
+            .catch(err => {
+                console.error('Checkout error:', err);
+                if (!navigator.onLine || err.message.includes('offline')) {
+                    addToQueue(
+                        currentRecord.requestId,
+                        currentRecord.name,
+                        currentRecord.email,
+                        currentRecord.hostRoom
+                    );
+                    showToast('📡 Offline', 'You are offline. Your sign-out has been saved. Emails will be sent when you reconnect.', false);
+                    actionBtn.disabled = true;
+                    actionBtn.textContent = 'Queued for Sync';
+                } else {
+                    showToast('Error', 'Could not complete checkout. Please try again.', false);
+                    actionBtn.disabled = false;
+                    actionBtn.textContent = '✅ Confirm Check-Out';
+                    isCheckoutMode = true;
+                }
+            });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  EVENT LISTENERS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        input.addEventListener('input', function() {
+            const val = this.value.trim().toUpperCase();
+            this.value = val;
+            if (isCheckoutMode) {
+                actionBtn.textContent = 'Check Details';
+                isCheckoutMode = false;
+                currentRecord = null;
+                infoBox.classList.remove('show');
+            }
+            actionBtn.disabled = val.length < 4;
+        });
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !actionBtn.disabled) {
+                handleAction();
+            }
+        });
+
+        actionBtn.addEventListener('click', handleAction);
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  CLICK TO COPY SAMPLE ID
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        document.getElementById('sampleCode').addEventListener('click', function() {
+            const sample = this.textContent;
+            navigator.clipboard?.writeText(sample).then(() => {
+                showToast('Copied!', `Sample ID "${sample}" copied to clipboard.`, true);
+            }).catch(() => {
+                input.value = sample;
+                input.dispatchEvent(new Event('input'));
+                showToast('Filled', `Sample ID "${sample}" filled in.`, true);
+            });
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  TOAST HELPER
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function showToast(title, msg, success) {
+            toastTitle.textContent = title;
+            toastMsg.textContent = msg;
+            toast.className = 'toast show';
+            toast.style.borderLeftColor = success ? 'var(--green)' : 'var(--red)';
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INIT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        document.addEventListener('DOMContentLoaded', function() {
+            const queue = getQueue();
+            if (queue.length > 0) {
+                showToast('📡 Pending Sync', `${queue.length} checkout(s) waiting to be sent.`, false);
+                processQueue();
+            }
+            if (!navigator.onLine) {
+                document.getElementById('offlineBanner').classList.add('show');
+            }
+            actionBtn.disabled = input.value.length < 4;
+        });
+
+        // Auto-fill from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const reqParam = urlParams.get('request');
+        if (reqParam) {
+            input.value = reqParam.trim().toUpperCase();
+            setTimeout(() => {
+                input.dispatchEvent(new Event('input'));
+                actionBtn.disabled = input.value.length < 4;
+            }, 300);
+        }
+    </script>
+</body>
+</html>
