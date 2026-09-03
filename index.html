@@ -2308,8 +2308,8 @@
                 floors: 6,
                 roomsPerFloor: 22,
                 getGender: (f) => {
-                    if (f === 1) return 'male';
-                    if (f >= 2 && f <= 5) return 'female';
+                    if (f === 1 || f === 2) return 'male';
+                    if (f >= 3 && f <= 5) return 'female';
                     if (f === 6) return 'male';
                     return 'none';
                 },
