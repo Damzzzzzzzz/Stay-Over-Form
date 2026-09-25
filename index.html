@@ -1848,7 +1848,7 @@
             <div class="entry-notices">
                 <div class="entry-notice-item"><strong>Accountability Directive</strong>All overnight visitors must be attached to an active resident host. The designated host carries explicit accountability for the guest's actions and conduct.</div>
                 <div class="entry-notice-item"><strong>⏰ Departure Deadline</strong>All guests <span class="rule-highlight">must vacate the room by 11:00 AM</span> on the departure date. Overstaying beyond this time without an approved extension is a violation of hall policy.</div>
-                <div class="entry-notice-item"><strong>📅 Advance Booking Requirement</strong>All stay-over requests <span class="rule-highlight2">must be submitted at least 3 days in advance</span> of the arrival date. Same-day or next-day bookings are not permitted.</div>
+                <div class="entry-notice-item"><strong>📅 Booking Window</strong>Stay-over requests may be submitted for <span class="rule-highlight2">any date, including the day of arrival itself</span>. Approval is still required before check-in.</div>
                 <div class="entry-notice-item critical"><strong>Mandatory Terms Verification</strong>Applicants must carefully process, acknowledge, and comply with all security and spatial constraints set forth in the operational framework.</div>
             </div>
             <div class="entry-buttons">
@@ -1914,7 +1914,7 @@
                         <!-- Advance Notice -->
                         <div class="advance-notice">
                             <span class="icon">📅</span>
-                            <span><strong>3-Day Advance Rule:</strong> Arrival date must be at least 3 days from today. <strong>Departure by 11:00 AM</strong> on the departure date.</span>
+                            <span><strong>Same-Day Arrivals Allowed:</strong> Arrival date can be today or any future date. <strong>Departure by 11:00 AM</strong> on the departure date.</span>
                         </div>
 
                         <div class="section-divider">Off-Campus Student Profile</div>
@@ -1964,7 +1964,7 @@
                         <div class="section-divider">Stay Profile</div>
                         <div class="time-row">
                             <div class="field">
-                                <label>Arrival Date <span class="hint">(min 3 days ahead)</span></label>
+                                <label>Arrival Date <span class="hint">(same-day allowed)</span></label>
                                 <div class="date-picker-trigger" id="arrDateTrigger" onclick="openDatePicker('arr')">
                                     <span class="date-display placeholder" id="arrDateDisplay">Select date</span>
                                     <span class="date-icon">📅</span>
@@ -2057,7 +2057,7 @@
                     <div><strong>11:00 AM Departure Deadline</strong><br />You <strong>must</strong> vacate the room by <strong>11:00 AM</strong> on your approved departure date. Overstaying beyond this time without an approved extension is a violation of hall policy.<br /><span class="sanction-note">⛔ Sanctions: Unauthorised overstay will result in a formal warning, daily charges applied to your student account, and potential suspension of future booking privileges.</span></div>
                 </li>
                 <li class="advance-rule"><span class="rnum">📅</span>
-                    <div><strong>3-Day Advance Booking</strong><br />All stay-over requests <strong>must be submitted at least 3 days prior</strong> to the arrival date. Same-day or next-day bookings are not permitted.</div>
+                    <div><strong>Flexible Booking Window</strong><br />Stay-over requests may be submitted for any date, <strong>including the day of arrival itself</strong>. All requests still require approval before check-in.</div>
                 </li>
             </ul>
         </div>
@@ -2065,13 +2065,13 @@
             <div class="rules-box-header">Operational Thresholds <span class="sub-header">● Capacity &amp; Conduct</span></div>
             <ul class="rules-list">
                 <li><span class="rnum">4</span>An emergency contact number is mandatory for all off-campus students staying overnight.</li>
-                <li><span class="rnum">5</span>Stay-overs are strictly limited to a maximum of three (3) consecutive nights unless special permission is granted.</li>
+                <li><span class="rnum">5</span>There is no limit on the number of consecutive nights for an approved stay-over, but the guest must vacate by 11:00 AM on the approved departure date regardless of stay length.</li>
                 <li><span class="rnum">6</span>Guests must adhere to noise ordinances and not disrupt other residents in the Tower.</li>
                 <li class="departure-rule"><span class="rnum">⏱️</span>
                     <div><strong>Departure Enforcement</strong><br />You are required to leave the room by <strong>11:00 AM</strong> on the departure date specified in your approved request. Extensions must be requested at least 24 hours in advance.<br /><span class="sanction-note">⛔ Sanctions: Unauthorised overstay will lead to disciplinary action, daily charges applied to your student account, and a ban on future bookings.</span></div>
                 </li>
                 <li class="advance-rule"><span class="rnum">📅</span>
-                    <div><strong>Advance Notice Required</strong><br />All requests must be lodged <strong>at least 3 days before</strong> the intended arrival. This allows adequate time for review and approval.</div>
+                    <div><strong>No Advance Notice Required</strong><br />Requests can be lodged at any time, up to and including the intended arrival date, though earlier requests allow more time for review and approval.</div>
                 </li>
             </ul>
         </div>
@@ -2268,10 +2268,7 @@
         }
 
         function getMinDate() {
-            const today = getToday();
-            const min = new Date(today);
-            min.setDate(today.getDate() + 3);
-            return min;
+            return getToday();
         }
 
         function dateToStr(date) {
@@ -2308,8 +2305,8 @@
                 floors: 6,
                 roomsPerFloor: 22,
                 getGender: (f) => {
-                    if (f === 1 || f === 2) return 'male';
-                    if (f >= 3 && f <= 5) return 'female';
+                    if (f === 1) return 'male';
+                    if (f >= 2 && f <= 5) return 'female';
                     if (f === 6) return 'male';
                     return 'none';
                 },
@@ -2553,7 +2550,7 @@
 
             const minDate = getMinDate();
             if (dateObj < minDate) {
-                showToast('Date Error', 'Arrival date must be at least 3 days from today.', false);
+                showToast('Date Error', 'Arrival date cannot be in the past.', false);
                 return;
             }
 
@@ -3280,7 +3277,7 @@
                 if (arrDate && arrDate < minDate) {
                     document.getElementById('arrDateTrigger').classList.add('input-error');
                     hasError = true;
-                    showToast('Advance Booking Error', 'Arrival date must be at least 3 days from today.', false);
+                    showToast('Advance Booking Error', 'Arrival date cannot be in the past.', false);
                     return;
                 }
             }
